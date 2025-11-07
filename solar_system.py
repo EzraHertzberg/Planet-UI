@@ -18,6 +18,8 @@ commands = ["h","timeset","solarsystem"]
 
 grid = []
 
+def goto(place):
+
 def set_new_time():
     year = 0
     month = 0
