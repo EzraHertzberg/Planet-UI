@@ -31,23 +31,29 @@ class text_box:
     def draw(self):
         if self.has_border:
             character = 0
-            for i in range(self.w):
-                for j in range(self.h):
+            lines = []
+            word = ""
+            for letter in self.message:
+                word = word + letter
+                if len(word) == self.w - 2:
+                    lines.append(word)
+                
+            for j in range(self.h):
+                for i in range(self.w):
                     try:
                         if i == 0 or i == self.w-1:
                             grid[self.y + j][self.x + i] = "|"
-                        if j == 0 or j == self.h-1:
+                        elif j == 0 or j == self.h-1:
                             grid[self.y + j][self.x + i] = "~"
-                        if i > 0 and i < self.w and j > 0 and j < self.y - 1 and len(self.message) > character:                    
-                            print(i)
-                            grid[self.x + i][self.y + j] = self.message[character]
+                        elif len(self.message) > character:                    
+                            grid[self.y + j][self.x + i] = self.message[character]
                             character += 1
                     except IndexError:
                         pass
 def mercury():
     os.system("cls")
     print("mercury")
-    text1 = "This is text and it is going to go in a text box"
+    text1 = "This is text and it is going to go in a text box blah blah blah why is text wrapping before it should blah blah blah"
     text_box1 = text_box(10,10,50,25,text1,True)
     text_box1.draw()
 
