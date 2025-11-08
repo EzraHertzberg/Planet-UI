@@ -19,10 +19,38 @@ commands = ["h","timeset","solarsystem","goto","show"]
 page_info = []
 grid = []
 
-
-def mercury():
-    print("mercury")
+class text_box:
+    def __init__(self,x, y, w, h, message, has_border):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.message = message
+        self.has_border = has_border
     
+    def draw(self):
+        if self.has_border:
+            character = 0
+            for i in range(self.w):
+                for j in range(self.h):
+                    try:
+                        if i == 0 or i == self.w-1:
+                            grid[self.y + j][self.x + i] = "|"
+                        if j == 0 or j == self.h-1:
+                            grid[self.y + j][self.x + i] = "~"
+                        if i > 0 and i < self.w and j > 0 and j < self.y - 1 and len(self.message) > character:                    
+                            print(i)
+                            grid[self.x + i][self.y + j] = self.message[character]
+                            character += 1
+                    except IndexError:
+                        pass
+def mercury():
+    os.system("cls")
+    print("mercury")
+    text1 = "This is text and it is going to go in a text box"
+    text_box1 = text_box(10,10,50,25,text1,True)
+    text_box1.draw()
+
 
 def venus():
     print("venus")
@@ -35,26 +63,34 @@ def earth():
 def mars():
     print("mars")
 
+places_to_go = ["mercury","venus","earth","mars","jupiter","saturn","uranus"]
 
 
-def go_to(place):
+def go_to():
     global page_info
     while True:
-        go = input("go to where?: ").lower
-        if go == "mercury":
-            page_info = [mercury]
-        elif go == "venus":
-            page_info = [venus]        
-        elif go == "earth":
-            page_info = [earth]
-        elif go == "mars":
-            page_info = [mars]
-        elif go == "jupiter":
-            page_info = [jupiter]
-        elif go == "uranus":
-            page_info = [uranus]
-        elif go == "neptune":
-            page_info = [neptune]            
+        go = input("go to where?: ").lower()
+        if go in places_to_go:
+            if go == "mercury":
+                page_info = [mercury]
+            elif go == "venus":
+                page_info = [venus]        
+            elif go == "earth":
+                page_info = [earth]
+            elif go == "mars":
+                page_info = [mars]
+            elif go == "jupiter":
+                page_info = [jupiter]
+            elif go == "saturn":
+                page_info = [saturn]
+            elif go == "uranus":
+                page_info = [uranus]
+            elif go == "neptune":
+                page_info = [neptune]
+            break
+        else:
+            print(f"invalid, program does not recognize {go} as a place to go to. Try again")
+            
 def set_new_time():
     year = 0
     month = 0
@@ -119,6 +155,10 @@ def grid_call():
     for i in range(screen_height):
         print("".join(grid[i]))
 
+def screen_clear():
+    os.system("cls")
+    grid_set()
+    grid_call()
 
 class circle:
         def __init__(self,x, y, size, name):
@@ -155,7 +195,6 @@ class circle:
 
 def solar_system():
     os.system("cls")
-    grid_set()
     sun = circle(80,24,4,"sun")
     planets = ["place holder",
                circle(60,20,3, "mercury"),
@@ -173,10 +212,11 @@ def solar_system():
         if i > 0:
             planet.orbit(sun, round(6 + i * 2.5), angle_calc.calc_angle(i, the_time), 0) 
             planet.draw()
-    grid_call()
+
         
         
 if __name__ == "__main__":
+    screen_clear()
     while True:
         inp = input("Enter a command, h for help: ")
         if inp in commands:
@@ -194,6 +234,7 @@ if __name__ == "__main__":
                 go_to()
         else:
             print("that's not a command")
-            
+        grid_set()
         for page in page_info:
             page()
+        grid_call()
