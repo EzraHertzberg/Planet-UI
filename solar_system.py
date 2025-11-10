@@ -7,6 +7,9 @@ import time
 import random
 import angle_calc
 from skyfield.api import load
+import pyfiglet
+import assets
+
 ts = load.timescale()
 the_time = ts.now()
 
@@ -29,32 +32,32 @@ class text_box:
         self.has_border = has_border
     
     def draw(self):
-        if self.has_border:
-            character = 0
-            lines = []
-            word = ""
-            for letter in self.message:
-                word = word + letter
-                if len(word) == self.w - 2:
-                    lines.append(word)
-                
-            for j in range(self.h):
-                for i in range(self.w):
-                    try:
-                        if i == 0 or i == self.w-1:
+        new_line = False
+        character = 0
+        lines = []
+        for j in range(self.h):
+            new_line = False
+            for i in range(self.w):
+                try:
+                    if (i == 0 or i == self.w - 1) and self.has_border:
                             grid[self.y + j][self.x + i] = "|"
-                        elif j == 0 or j == self.h-1:
+                    elif (j == 0 or j == self.h - 1) and self.has_border:
                             grid[self.y + j][self.x + i] = "~"
-                        elif len(self.message) > character:                    
+                    elif len(self.message) > character and not new_line:
+                        if self.message[character] != "‽":
                             grid[self.y + j][self.x + i] = self.message[character]
+                        if self.message[character] != "‽" and not new_line:
                             character += 1
-                    except IndexError:
-                        pass
+                        else:
+                            if self.message[character] == "‽":
+                                character += 1
+                            new_line = True
+                except IndexError:
+                    pass
 def mercury():
     os.system("cls")
-    print("mercury")
-    text1 = "This is text and it is going to go in a text box blah blah blah why is text wrapping before it should blah blah blah"
-    text_box1 = text_box(10,10,50,25,text1,True)
+    text1 = assets.mercury
+    text_box1 = text_box(10,2,100,25,text1,False)
     text_box1.draw()
 
 
@@ -149,6 +152,7 @@ def set_new_time():
         
 def grid_set():
     global grid
+    grid = []
     for j in range(screen_height):
         row_arr = []
         for i in range(screen_width):
@@ -222,6 +226,7 @@ def solar_system():
         
         
 if __name__ == "__main__":
+    """
     screen_clear()
     while True:
         inp = input("Enter a command, h for help: ")
@@ -244,3 +249,7 @@ if __name__ == "__main__":
         for page in page_info:
             page()
         grid_call()
+        """
+    grid_set()
+    mercury()
+    grid_call()
