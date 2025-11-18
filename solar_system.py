@@ -72,7 +72,9 @@ def planet_page(planet_id):
     else:
         planet_type = "Ice Giant"
     text3 = text_box(60,5,40,3,f"Planet Type: {planet_type}",True)
-
+    
+    #text4  = text_box(5,40,40,10,f"Lore",True)
+    
 def go_to():
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
     global page_info, page_specifier
@@ -253,7 +255,6 @@ if __name__ == "__main__":
                 page(page_specifier)
             grid_call()        
 
-    
 """
     grid_set()
     planet_page(6)
