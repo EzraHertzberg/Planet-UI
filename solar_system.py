@@ -24,12 +24,6 @@ grid = []
 page_specifier = 0
 
 
-"""
-pages = {
-    "mercury": planet_page(6)
-    }
-"""
-
 class text_box:
     def __init__(self,x, y, w, h, message, has_border):
         self.x = x
@@ -70,7 +64,14 @@ def planet_page(planet_id):
 
     text2 = assets.planet_imgs[planet_id - 1]
     text_box(5,10,65,35,text2,False)
-
+    planet_type = ""
+    if planet_id < 5:
+        planet_type = "Terrestrial Planet"
+    elif planet_id < 7:
+        planet_type = "Gas Giant"
+    else:
+        planet_type = "Ice Giant"
+    text3 = text_box(60,5,40,3,f"Planet Type: {planet_type}",True)
 
 def go_to():
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
@@ -83,11 +84,11 @@ def go_to():
         
         if go in planets:
             page_info = [planet_page]
-            page_specifier = planets(go) + 1      
+            page_specifier = planets.index(go) + 1      
             break
         if go == "solarsystem":
             page_info = [solar_system]
-            
+            break
 
         else:
             print(f"invalid, program does not recognize {go} as a place to go to. Try again")
@@ -242,7 +243,7 @@ if __name__ == "__main__":
         else:
             print("that's not a command")
         grid_set()
-        
+        os.system("cls")
         if page_specifier == 0:
             for page in page_info:
                 page()
