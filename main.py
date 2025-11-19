@@ -11,13 +11,6 @@ import pyfiglet
 import assets
 ts = load.timescale()
 the_time = ts.now()
-year = 0
-month = 0
-day = 0
-hour = 0
-minute = 0
-second = 0
-
 size = os.get_terminal_size()
 screen_width = size.columns 
 screen_height = size.lines - 2
@@ -66,10 +59,10 @@ def planet_page(planet_id):
     os.system("cls")
     moon_counts = []
     text1 = assets.planet_names[planet_id - 1]
-    text_box(15,2,60,25,text1,False)
+    text_box(15, 2, 60, 25, text1, False)
 
     text2 = assets.planet_imgs[planet_id - 1]
-    text_box(5,10,65,35,text2,False)
+    text_box(5, 10, 65, 35, text2, False)
     planet_type = ""
     if planet_id < 5:
         planet_type = "Terrestrial Planet"
@@ -78,9 +71,9 @@ def planet_page(planet_id):
     else:
         planet_type = "Ice Giant"
     
-    text_box(60,5,40,3,f"Planet Type: {planet_type}",True)
+    text_box(60, 5, 40, 3, f"Planet Type: {planet_type}", True)
     #text_box(60,8,40,3,f"Moon Count as of 2025: {mooncount}",True)    
-    text_box(15,38,42,10,assets.planet_description[planet_id - 1],True)
+    text_box(12, 38, 46, 10, assets.planet_description[planet_id - 1], True)
     
 def go_to():
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
@@ -168,7 +161,7 @@ def set_new_time():
                 else:
                     print("Invalid hour please enter a hour within range 0-23")
             except TypeError:
-                print("please enter a number for the time")
+                print("please enter a number for the hour")
             ###
 
 
@@ -255,7 +248,6 @@ if __name__ == "__main__":
     screen_clear()
     while True:
         inp = input("Enter a command, h for help: ")
-        page_specifier = 0
         if inp in commands:
             if inp == "h":
                 os.system("cls")
