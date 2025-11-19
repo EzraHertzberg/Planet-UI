@@ -14,9 +14,11 @@ def calc_angle(planet_id,t):
     return angle
 
 def calc_dist(planet_id1, planet_id2, t):
-    position1 = planets[planet_id1].at(t)
-    x1, y1, z1 = position.frame_xyz(ecliptic_frame).au
-    position2 = planets[planet_id2].at(t)
-    x2, y2, z2 = position.frame_xyz(ecliptic_frame).au
+    astrometric = planets[planet_id1].at(t).observe(planets[planet_id2])
+    ra, dec, distance = astrometric.radec()
+    print(ra)
+    print(dec)
+    print(distance)
+
 if __name__ == "__main__":
-    calc_dist(2, 2, the_time)
+    calc_dist(1, 2, the_time)

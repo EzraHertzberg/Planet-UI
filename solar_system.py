@@ -9,15 +9,20 @@ import calc
 from skyfield.api import load
 import pyfiglet
 import assets
-
 ts = load.timescale()
 the_time = ts.now()
+year = 0
+month = 0
+day = 0
+hour = 0
+minute = 0
+second = 0
 
 size = os.get_terminal_size()
 screen_width = size.columns 
 screen_height = size.lines - 2
 
-commands = ["h","timeset","solarsystem","goto","show"]
+commands = ["h","timeset","dateset","solarsystem","goto","show"]
 
 page_info = []
 grid = []
@@ -59,6 +64,7 @@ class text_box:
 
 def planet_page(planet_id):
     os.system("cls")
+    moon_counts = []
     text1 = assets.planet_names[planet_id - 1]
     text_box(15,2,60,25,text1,False)
 
@@ -71,9 +77,10 @@ def planet_page(planet_id):
         planet_type = "Gas Giant"
     else:
         planet_type = "Ice Giant"
-    text3 = text_box(60,5,40,3,f"Planet Type: {planet_type}",True)
     
-    #text4  = text_box(5,40,40,10,f"Lore",True)
+    text_box(60,5,40,3,f"Planet Type: {planet_type}",True)
+    #text_box(60,8,40,3,f"Moon Count as of 2025: {mooncount}",True)    
+    text_box(15,38,42,10,assets.planet_description[planet_id - 1],True)
     
 def go_to():
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
@@ -95,12 +102,9 @@ def go_to():
         else:
             print(f"invalid, program does not recognize {go} as a place to go to. Try again")
             
-def set_new_time():
-    year = 0
-    month = 0
-    day = 0
+def set_new_date():
     while True:
-        inp1 = input("Enter d to set date or n for the current time: ")
+        inp1 = input("Enter d to set date or n for the current date: ")
         if inp1 == "n" or inp1 == "d":
             break
         else:
@@ -141,11 +145,33 @@ def set_new_time():
                 else:
                     break
             except TypeError:
-                print("please enter a number for the day")
-            
+                print("please enter a number for the day")    
         return ts.utc(year, month, day, 0, 0, 0) 
         
+
+def set_new_time():
+    while True:
+        inp1 = input("Enter t to set time or n for the current time: ")
+        if inp1 == "t" or inp1 == "n":
+            break
+        else:
+            print("Invalid input enter t or n")
         
+    if inp1 == "n":
+        return ts.now()
+    else:
+        while True:
+            try:
+                hour = int(input("Enter an hour in military time from 0 to 23: "))
+                if hour > 0 and year < 23:
+                    break
+                else:
+                    print("Invalid hour please enter a hour within range 0-23")
+            except TypeError:
+                print("please enter a number for the time")
+            ###
+
+
 def grid_set():
     global grid
     grid = []
@@ -236,10 +262,14 @@ if __name__ == "__main__":
                 print("These are the valid commands: ")
                 for com in commands:
                     print(com)
-            if inp == "timeset":
-                the_time = set_new_time()
+            if inp == "dateset":
+                the_time = set_new_date()
                 os.system("cls")
                 print(f"time set to {the_time.utc_strftime()}")
+            if inp == "timeset":
+                set_new_time()
+                os.system("cls")
+                print(f"time set to {the_time.utc_strftime()}")                
             if inp == "goto":
                 go_to()
         else:
@@ -255,8 +285,9 @@ if __name__ == "__main__":
                 page(page_specifier)
             grid_call()        
 
-"""
+
+    """
     grid_set()
-    planet_page(6)
+    planet_page(5)
     grid_call()
 """
