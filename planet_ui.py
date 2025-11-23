@@ -29,7 +29,13 @@ class text_box:
         self.w = w
         self.h = h
         
-        self.message = message.replace("\n","‽")
+        if not wrap:
+            self.message = message.replace("\n","‽")
+        elif wrap == "fill":
+            wrapped = textwrap.fill(message, self.w - 2)
+            wrapped = wrapped.replace("\n","‽")
+            self.message = wrapped
+            
         self.has_border = has_border
         
         #actual function
@@ -61,9 +67,10 @@ def planet_page(planet_id):
     moon_counts = []
     text1 = assets.planet_names[planet_id - 1]
     text_box(15, 2, 60, 25, text1)
-
-    text2 = assets.planet_imgs[planet_id - 1]
-    text_box(5, 10, 65, 35, text2)
+    if planet_id != 6 and planet_id != 7: 
+        text_box(5, 10, 65, 35, assets.planet_imgs[planet_id - 1])
+    else:
+        text_box(5, 7, 65, 35, assets.planet_imgs[planet_id - 1])
     planet_type = ""
     if planet_id < 5:
         planet_type = "Terrestrial Planet"
@@ -74,7 +81,7 @@ def planet_page(planet_id):
     
     text_box(60, 5, 40, 3, f"Planet Type: {planet_type}", True)
     #text_box(60,8,40,3,f"Moon Count as of 2025: {mooncount}",True)    
-    text_box(12, 38, 46, 10, assets.planet_description[planet_id - 1], True)
+    text_box(12, 38, 46, 10, assets.planet_description[planet_id - 1], True, "fill")
     text_box(60, 10, 45, 18, calc.planet_dists(planet_id, "km", the_time), True)
     text_box(60, 7, 45, 4, calc.sun_dist(planet_id, "km", the_time), True)
 
