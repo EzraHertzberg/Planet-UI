@@ -7,7 +7,7 @@ ts = load.timescale()
 the_time = ts.now()
 
 
-def calc_angle(planet_id,t):
+def calc_angle(planet_id, t):
     position = planets[planet_id].at(t)
     x, y, z = position.frame_xyz(ecliptic_frame).au
     angle = (180/math.pi) * math.atan2(y, x)
@@ -19,22 +19,34 @@ def calc_dist(planet_id1, planet_id2, t):
     ra, dec, distance = astrometric.radec()
     return distance
 
-planet_names = ["","mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
+
+planet_names = ["","Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptune"]
+
+
+def sun_dist(planet_id, t):
+    dist = calc_dist(planet_id, 10, t)
+    return f"Distance from {planet_names[planet_id]} to Sun \n {dist}" 
+
+
 def gen_dists(planet_id, unit, t):
     dists = ""
     for i in range(1, 9):
         if i !=  planet_id:
+            dist = calc_dist(planet_id, i, t)            
             if unit == "km":
-                the_unit = "km"
-                dist = calc_dist(planet_id, i, t).km
+                dist_f = '{:,.0f} km'.format(dist.km)
             elif unit == "mi":
-                the_unit = "mi"
-                dist = calc_dist(planet_id, i, t).mi
+                dist_f = '{:,.0f} mi'.format(dist.km * 0.621371)
+            elif unit == "ls":
+                dist_f = '{:,.0f} light-seconds'.format(dist.km * (1/299792))
+            elif unit == "lm":
+                dist_f = '{:,.0f} light-minutes'.format(dist.km * (1/(60*299792)))                
             else:
-                the_unit = ""
-                dist = calc_dist(planet_id, i, t)
-            dists = dists + f"\n{planet_names[planet_id]} is {dist} {the_unit} away from {planet_names[i]}"
-    return(dists)
+                dist_f = '{:,.3f} au'.format(dist.au)
+            dists = dists + f"\n{planet_names[planet_id]} is {dist_f} away from {planet_names[i]}\n"
+    return(f"Distances of {planet_names[planet_id]} from all planets: \n" + dists)
+
 
 if __name__ == "__main__":
-    print(gen_dists(3, "km", the_time))
+    #print(calc_dist(3, 1, the_time))
+    print(planets)

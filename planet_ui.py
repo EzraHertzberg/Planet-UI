@@ -1,13 +1,13 @@
 """
 Live accurate solar system
 """
+import textwrap
 import math
 import os
 import time
 import random
 import calc
 from skyfield.api import load
-import pyfiglet
 import assets
 ts = load.timescale()
 the_time = ts.now()
@@ -23,7 +23,7 @@ page_specifier = 0
 
 
 class text_box:
-    def __init__(self,x, y, w, h, message, has_border):
+    def __init__(self, x, y, w, h, message, has_border):
         self.x = x
         self.y = y
         self.w = w
@@ -74,7 +74,9 @@ def planet_page(planet_id):
     text_box(60, 5, 40, 3, f"Planet Type: {planet_type}", True)
     #text_box(60,8,40,3,f"Moon Count as of 2025: {mooncount}",True)    
     text_box(12, 38, 46, 10, assets.planet_description[planet_id - 1], True)
-    
+    text_box(60, 15, 45, 16, calc.gen_dists(planet_id, "km", the_time), True)
+    #text_box(60, 8, 45, 5, calc.sun_dist(planet_id, the_time), True)
+
 def go_to():
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
     global page_info, page_specifier
@@ -218,8 +220,8 @@ class circle:
             self.x = x
             self.y = y
             self.size = int(size)
-            self.name = name
-            
+            self.name = name        
+        
         def draw(self):
             for i in range(self.size):
                 if i < self.size // 2:
@@ -229,41 +231,55 @@ class circle:
                 
                 for j in range(-e, e):
                     try:
-                        if grid[(self.y - self.size//2) + i][self.x + j]:
-                            grid[(self.y - self.size//2) + i][self.x + j] = "█" 
+                        grid[(self.y - self.size//2) + i][self.x + j] = "█" 
                     except IndexError:
                         pass  
             for k in range(len(self.name)):
                 try:
-                     if grid[(self.y - self.size//2) + self.size][self.x + k]:
-                        grid[(self.y - self.size//2) + self.size][self.x + k] = self.name[k] 
+                    grid[(self.y - self.size//2) + self.size][self.x + k] = self.name[k] 
                 except IndexError:
-                    pass          
+                    pass
+                
+                
         def orbit(self, origin, dist, init_ang, speed):  
             if not hasattr(self, "ang"):
                 self.ang = init_ang * math.pi / 180
-            self.x = round(origin.x + math.cos(self.ang) * 2 * dist)
+            self.x = round(origin.x + math.cos(self.ang) * 1.8 * dist)
             self.y = round(origin.y - math.sin(self.ang) * 0.9 * dist)
             self.ang = self.ang + speed
+            
+            
+def draw_ring(origin, dist):
+    for i in range(1,round(360)):
+        try:
+            x = round(origin.x + math.cos(i) * 1.8 * dist)
+            y = round(origin.y - math.sin(i) * 0.9 * dist)
+            grid[y][x] = "."
+        except IndexError:
+            pass    
+
 
 def solar_system():
     os.system("cls")
-    sun = circle(90,24,4,"sun")
+    sun = circle(90,25,4,"sun")
     planets = ["place holder",
-               circle(60,20,3, "Mercury"),
-               circle(60,20,3,"Venus"),
-               circle(60,20,3., "Earth"),
-               circle(60,20,3, "Mars"),
-               circle(60,20,3, "Jupiter"),
-               circle(60,20,3, "Saturn"),
-               circle(60,20,3, "Uranus"),
-               circle(60,20,3, "Neptune"),
+               circle(60,20, 3, "Mercury"),
+               circle(60,20, 3,"Venus"),
+               circle(60,20, 3, "Earth"),
+               circle(60,20, 3, "Mars"),
+               circle(60,20, 3, "Jupiter"),
+               circle(60,20, 3, "Saturn"),
+               circle(60,20, 3, "Uranus"),
+               circle(60,20, 3, "Neptune"),
                ]
     grid_set()
     sun.draw()
+    for i in range(1, 9):
+        pass
+        draw_ring(sun, round(4 + i * 3)) 
     for i, planet in enumerate(planets):
-        if i > 0:
-            planet.orbit(sun, round(6 + i * 2.5), calc.calc_angle(i, the_time), 0) 
+        if i > 0:                      
+            planet.orbit(sun, round(4 + i * 3), calc.calc_angle(i, the_time), 0)            
             planet.draw()
     print(f"Angles of planets as of {the_time.utc_strftime()} accessed from JPL ephemeris {calc.ephem}") 
         
