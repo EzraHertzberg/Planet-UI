@@ -1,7 +1,6 @@
 """
-Live accurate solar system
+Planet_UI a TUI to explore the solar system
 """
-import textwrap
 import math
 import os
 import time
@@ -9,68 +8,34 @@ import random
 import calc
 from skyfield.api import load
 import assets
+import tui_elements
+
 ts = load.timescale()
 the_time = ts.now()
 size = os.get_terminal_size()
 screen_width = size.columns 
 screen_height = size.lines - 3
 
-commands = ["h","timeset","dateset","solarsystem","goto","show"]
+the_unit = "au"
+
+commands = {"h": "type h to be sent to the help page",
+            "dateset": "prompts you to set set specific date or set date as the current date",
+            "timeset": "prompts you to set specific time or set time as the current time",
+            "unitset": "prompts for what unit to display, valid units include {km, mi, au, light-seconds, light-minutes, and light time",
+            "goto": "prompts for destination ex.{mars, venus, solarsystem} and navigates to that page"}
 
 page_info = []
 grid = []
 page_specifier = 0
 
-
-class text_box:
-    def __init__(self, x, y, w, h, message, has_border=False, wrap=None):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        
-        if not wrap:
-            self.message = message.replace("\n","‽")
-        elif wrap == "fill":
-            wrapped = textwrap.fill(message, self.w - 2)
-            wrapped = wrapped.replace("\n","‽")
-            self.message = wrapped
-            
-        self.has_border = has_border
-        
-        #actual function
-        new_line = False
-        character = 0
-        lines = []
-        for j in range(self.h):
-            new_line = False
-            for i in range(self.w):
-                try:
-                    if (i == 0 or i == self.w - 1) and self.has_border:
-                            grid[self.y + j][self.x + i] = "|"
-                    elif (j == 0 or j == self.h - 1) and self.has_border:
-                            grid[self.y + j][self.x + i] = "~"
-                    elif len(self.message) > character and not new_line:
-                        if self.message[character] != "‽":
-                            grid[self.y + j][self.x + i] = self.message[character]
-                        if self.message[character] != "‽" and not new_line:
-                            character += 1
-                        else:
-                            if self.message[character] == "‽":
-                                character += 1
-                            new_line = True
-                except IndexError:
-                    pass
-
 def planet_page(planet_id):
     os.system("cls")
     moon_counts = []
-    text1 = assets.planet_names[planet_id - 1]
-    text_box(15, 2, 60, 25, text1)
+    tui_elements.text_box(grid, 15, 2, 60, 25, assets.planet_names[planet_id - 1])
     if planet_id != 6 and planet_id != 7: 
-        text_box(5, 10, 65, 35, assets.planet_imgs[planet_id - 1])
+        tui_elements.text_box(grid, 5, 10, 65, 35, assets.planet_imgs[planet_id - 1])
     else:
-        text_box(5, 7, 65, 35, assets.planet_imgs[planet_id - 1])
+        tui_elements.text_box(grid, 5, 7, 65, 35, assets.planet_imgs[planet_id - 1])
     planet_type = ""
     if planet_id < 5:
         planet_type = "Terrestrial Planet"
@@ -79,11 +44,11 @@ def planet_page(planet_id):
     else:
         planet_type = "Ice Giant"
     
-    text_box(60, 5, 40, 3, f"Planet Type: {planet_type}", True)
-    #text_box(60,8,40,3,f"Moon Count as of 2025: {mooncount}",True)    
-    text_box(12, 38, 46, 10, assets.planet_description[planet_id - 1], True, "fill")
-    text_box(60, 10, 45, 18, calc.planet_dists(planet_id, "km", the_time), True)
-    text_box(60, 7, 45, 4, calc.sun_dist(planet_id, "km", the_time), True)
+    tui_elements.text_box(grid, 60, 5, 40, 3, f"Planet Type: {planet_type}", True) 
+    tui_elements.text_box(grid, 12, 38, 46, "stretch", assets.planet_description[planet_id - 1], True, "fill")
+    tui_elements.text_box(grid, 110, 5, 50, 5,f"Distances as of {the_time.utc_strftime()} accessed from JPL ephemeris {calc.ephem}", True, "fill")
+    tui_elements.text_box(grid, 110, 12, "stretch", 18, calc.planet_dists(planet_id, the_unit, the_time), True)
+    tui_elements.text_box(grid, 110, 9, "stretch", 4, calc.sun_dist(planet_id, the_unit, the_time), True)
 
 def go_to():
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
@@ -199,7 +164,13 @@ def set_new_time():
         the_day = the_time.utc.day
         return ts.utc(the_year, the_month, the_day, hour, minute, second) 
         
-        
+
+def unit_set():
+    valid_units["km","mi","au","light-seconds","light minutes"]
+    while True:
+        input("enter a unit for the distances")
+
+
 def grid_set():
     global grid
     grid = []
@@ -223,68 +194,32 @@ def screen_clear():
     grid_call()
 
 
-class circle:
-        def __init__(self,x, y, size, name):
-            self.x = x
-            self.y = y
-            self.size = int(size)
-            self.name = name        
-        
-        def draw(self):
-            for i in range(self.size):
-                if i < self.size // 2:
-                    e = i + self.size//2
-                else:
-                    e = self.size + self.size//2 -1 - i
-                
-                for j in range(-e, e):
-                    try:
-                        grid[(self.y - self.size//2) + i][self.x + j] = "█" 
-                    except IndexError:
-                        pass  
-            for k in range(len(self.name)):
-                try:
-                    grid[(self.y - self.size//2) + self.size][self.x + k] = self.name[k] 
-                except IndexError:
-                    pass
-                
-                
-        def orbit(self, origin, dist, init_ang, speed):  
-            if not hasattr(self, "ang"):
-                self.ang = init_ang * math.pi / 180
-            self.x = round(origin.x + math.cos(self.ang) * 1.8 * dist)
-            self.y = round(origin.y - math.sin(self.ang) * 0.9 * dist)
-            self.ang = self.ang + speed
-            
-            
-def draw_ring(origin, dist):
-    for i in range(1,round(360)):
-        try:
-            x = round(origin.x + math.cos(i) * 1.8 * dist)
-            y = round(origin.y - math.sin(i) * 0.9 * dist)
-            grid[y][x] = "."
-        except IndexError:
-            pass    
-
+def _help():
+    os.system("cls")
+    com_text = ""
+    print("Valid Commands")
+    for command, description in commands.items():
+        com_text = com_text + f"{command}           {description}"
+        text_box(3, 3, 200, 100, com_text)
 
 def solar_system():
     os.system("cls")
-    sun = circle(90,25,4,"sun")
+    sun = tui_elements.circle(grid, 90, 25, 4,"sun")
     planets = ["place holder",
-               circle(60,20, 3, "Mercury"),
-               circle(60,20, 3,"Venus"),
-               circle(60,20, 3, "Earth"),
-               circle(60,20, 3, "Mars"),
-               circle(60,20, 3, "Jupiter"),
-               circle(60,20, 3, "Saturn"),
-               circle(60,20, 3, "Uranus"),
-               circle(60,20, 3, "Neptune"),
+               tui_elements.circle(grid, 60,20, 3, "Mercury"),
+               tui_elements.circle(grid, 60,20, 3,"Venus"),
+               tui_elements.circle(grid, 60,20, 3, "Earth"),
+               tui_elements.circle(grid, 60,20, 3, "Mars"),
+               tui_elements.circle(grid, 60,20, 3, "Jupiter"),
+               tui_elements.circle(grid, 60,20, 3, "Saturn"),
+               tui_elements.circle(grid, 60,20, 3, "Uranus"),
+               tui_elements.circle(grid, 60,20, 3, "Neptune"),
                ]
     grid_set()
     sun.draw()
     for i in range(1, 9):
         pass
-        draw_ring(sun, round(4 + i * 3)) 
+        tui_elements.draw_ring(grid, sun, round(4 + i * 3)) 
     for i, planet in enumerate(planets):
         if i > 0:                      
             planet.orbit(sun, round(4 + i * 3), calc.calc_angle(i, the_time), 0)            
@@ -299,10 +234,8 @@ if __name__ == "__main__":
         inp = input("Enter a command, h for help: ")
         if inp in commands:
             if inp == "h":
-                os.system("cls")
-                print("These are the valid commands: ")
-                for com in commands:
-                    print(com)
+                page_specifier = 0
+                page_info = [_help]
             if inp == "dateset":
                 the_time = set_new_date()
                 os.system("cls")
@@ -324,10 +257,3 @@ if __name__ == "__main__":
             for page in page_info:
                 page(page_specifier)
             grid_call()        
-
-
-    """
-    grid_set()
-    planet_page(5)
-    grid_call()
-"""

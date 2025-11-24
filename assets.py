@@ -12,6 +12,7 @@ planet_description =[
 "Uranus is the 7th planet in the solar system. Uranus is known for its pale cyan appearance. Uranus is a type of Gas Giant known as an ice giant. Uranus is made up largly of ice but like other gas giants Uranus does not have a solid surface. Uranus is the coldest planet in the solar system.",
 "Neptune is the 8th planet in the solar system, making it the planet farthest from the Sun. Neptune is an Ice Giant meaning it lacks a solid surface and contains a great amount of Ice. Neptune is known for its darkblue color. Neptune has the longest orbit of any planet in our solar system, a full rotation around the sun takes Neptune 164 Earth Years."]
 
+moon_count = "no", "no", "one"
 
 planet_names =[ """
  __  __

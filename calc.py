@@ -26,7 +26,7 @@ def calc_dist(planet_id1, planet_id2, unit, t):
     elif unit == "lm":
         dist_f = '{:,.0f} light-minutes'.format(distance.km * (1/(60*299792)))                
     else:
-        dist_f = '{:,.3f} au'.format(dist.au)    
+        dist_f = '{:,.3f} au'.format(distance.au)    
     return dist_f
 
 
@@ -35,12 +35,7 @@ planet_names = ["","Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus",
 
 def sun_dist(planet_id, unit, t):
     dist = calc_dist(planet_id, 10, unit, t)
-    return f"Distance from {planet_names[planet_id]} to Sun \n{dist}" 
-"""
-def earth_dist(planet_id, unit, t):
-    dist = calc_dist(planet_id, 3, unit, t)
-    return f"Distance from {planet_names[planet_id]} to Sun \n{dist}" 
-"""
+    return f"{planet_names[planet_id]} is {dist} away from the Sun" 
 
 def planet_dists(planet_id, unit, t):
     dists = ""
@@ -52,5 +47,5 @@ def planet_dists(planet_id, unit, t):
 
 
 if __name__ == "__main__":
-    print(gen_dists(3, "km", the_time))
+    print(sun_dist(3,"au", the_time))
     #print(planets)
