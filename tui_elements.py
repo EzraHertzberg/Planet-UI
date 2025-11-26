@@ -1,5 +1,6 @@
 import textwrap
 import math
+#from ascii_magic import AsciiArt
 
 class text_box:
     def __init__(self, grid, x, y, w, h, message, has_border=False, wrap=None):
@@ -99,4 +100,6 @@ def draw_ring(grid, origin, dist):
             pass
         
 if __name__ == "__main__":
-     pass
+    from ascii_magic import AsciiArt
+    my_art = AsciiArt.from_image("images/Uranus_clouds.jpg")
+    my_art.to_terminal()

@@ -7,10 +7,23 @@ ts = load.timescale()
 the_time = ts.now()
 
 
-def calc_vel(planet_id, t):
-    
-    planets[planet_id].at(t).velocity.au_per_d
-    pass
+def calc_velocity(planet_id, unit, t):
+    if unit == "au":
+        x, y, z = planets[planet_id].at(t).observe(planets[10]).velocity.au_per_d
+        unit_f = "au/day"
+    else:
+        if unit == "km":
+            x, y, z = planets[planet_id].at(t).observe(planets[10]).velocity.km_per_s
+            unit_f = "km/s"            
+        if unit == "mi":
+            unit_f = "mi/s"
+            x, y, z = planets[planet_id].at(t).observe(planets[10]).velocity.km_per_s
+            x = x * 0.621371
+            y = y * 0.621371
+            z = z * 0.621371
+    vel = (x ** 2 + y ** 2 + z ** 2) ** 0.5
+        
+    return f"{planet_names[planet_id]} is orbiting the barycenter of the Solar System at {vel:,.3f} {unit_f}"
 
 def calc_barycenter_angle(planet_id, t):
     position = planets[planet_id].at(t)
@@ -48,6 +61,7 @@ def sun_dist(planet_id, unit, t):
     dist = calc_dist(planet_id, 10, unit, t)
     return f"{planet_names[planet_id]} is {dist} away from the Sun" 
 
+
 def planet_dists(planet_id, unit, t):
     dists = ""
     for i in range(1, 9):
@@ -58,5 +72,5 @@ def planet_dists(planet_id, unit, t):
 
 
 if __name__ == "__main__":
-    print(sun_dist(3,"au", the_time))
+    print(calc_vel(1,"km", the_time))
     #print(planets)
