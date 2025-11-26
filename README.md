@@ -1,4 +1,4 @@
-#Planet ui
+#Planet-TUI
 An educational terminal user interface about the solar system.
 
 Dependencies:
