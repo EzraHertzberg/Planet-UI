@@ -1,5 +1,5 @@
 #Planet ui
-An educational terminal user interface about our solar system.
+An educational terminal user interface about the solar system.
 
 Dependencies:
 Skyfield API
