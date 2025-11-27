@@ -1,5 +1,5 @@
 """
-Planet_UI a TUI to explore the solar system
+Planet_UI a TUI to explore the Solar System
 """
 import math
 import os
@@ -24,12 +24,30 @@ commands = {"h": "type h to be sent to the help page",
             "dateset": "prompts you to set set specific date or set date as the current date",
             "timeset": "prompts you to set specific time or set time as the current time",
             "unitset": "prompts for what velocity and distance units to display, valid units include {km, mi, au, light-seconds, or light-minutes",
-            "animate": "animate the solar system, prompts user for how fast and in what direction to iterate time",
+            "animate": "animate the solar system, prompts user for how fast and in what direction to move time",
+            "about": "sends you to the about page",
             "goto": "prompts for destination ex.{mars, venus, solarsystem} and navigates to that page"}
+
 
 page_info = []
 grid = []
 page_specifier = 0
+
+
+def about():
+    tui_elements.text_box(grid, 5, 35, "stretch", "stretch", quickstart, False) 
+    
+
+def welcome():
+    quickstart = """
+    enter h for a list of commands
+    enter goto to navigate to a new page
+    enter animate to see an animation of the solar system
+    enter about to see about page
+    """
+    os.system("cls")
+    tui_elements.text_box(grid, 0, 0, "stretch", "stretch", assets.welcome_text)
+    tui_elements.text_box(grid, 5, 35, "stretch", "stretch", quickstart, False)    
 
 def planet_page(planet_id):
     os.system("cls")
@@ -59,24 +77,27 @@ def planet_page(planet_id):
     
     tui_elements.text_box(grid, 70, 25, 40, 3,f"Velocity", True, "fill")
     tui_elements.text_box(grid, 70, 27, 40, 5,f"{calc.calc_velocity(planet_id, velocity_unit, the_time)}", True, "fill")
+
+
 def go_to():
+    valid_destinations = ["solarsystem","mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
     planets = ["mercury","venus","earth","mars","jupiter","saturn","uranus","neptune"]
     global page_info, page_specifier
     while True:
-        go = str(input("go to where? (q to quit): ")).lower()
+        go = str(input("go to where? (q to quit, d for list of valid pages): ")).lower()
         if go == "q":
             os.system("cls")
             break
-        
-        if go in planets:
+        elif go == "d":
+            print(f"Valid go-to destinations: {valid_destinations}")
+        elif go in planets:
             page_info = [planet_page]
             page_specifier = planets.index(go) + 1      
             break
-        if go == "solarsystem":
+        elif go == "solarsystem":
             page_specifier = 0
             page_info = [solar_system]
             break
-
         else:
             print(f"invalid, program does not recognize {go} as a place to go to. Try again")
             
@@ -188,7 +209,7 @@ def unit_set():
             break
         if d_unit == "u":
             print(f"the valid distance units are {valid_d_units}")
-        elif d_unit in valid_v_units:
+        elif d_unit in valid_d_units:
             distance_unit = d_unit
             print(f"Distance Units are now set to {d_unit}")
             break
@@ -238,9 +259,11 @@ def _help():
     os.system("cls")
     com_text = ""
     print("Valid Commands")
+    counter = 0
     for command, description in commands.items():
-        com_text = com_text + f"{command}           {description}"
-        tui_elements.text_box(grid, 3, 3, 200, 100, com_text)
+        counter += 1
+        tui_elements.text_box(grid, 3, 3 + counter, 200, 100, f"\n{command}")
+        tui_elements.text_box(grid, 15, 3 + counter, 200, 100, f"\n{description}")    
 
 def solar_system(animated = False):
     if not animated:
@@ -268,8 +291,7 @@ def solar_system(animated = False):
             planet.orbit(sun, round(4 + i * 3), calc.calc_sun_angle(i, the_time), 0)            
             planet.draw(grid)
     tui_elements.text_box(grid, 5, 26, "stretch", "stretch", "Vernal Equinox", False)
-    tui_elements.text_box(grid, 0, 0, "stretch", "stretch", f"Aproximation of Angles of planets from Sun as of {the_time.utc_strftime()} accessed from JPL ephemeris {calc.ephem}", False)     
-
+    tui_elements.text_box(grid, 0, 0, "stretch", "stretch", f"Aproximation of Angles of planets from Sun as of {the_time.utc_strftime()} accessed from JPL ephemeris {calc.ephem}", False)
     
     
 def animate_system():
@@ -298,9 +320,18 @@ def animate_system():
         print("press q to quit")
 
 if __name__ == "__main__":
-
-    screen_clear()
+    page_info = [welcome]
     while True:
+        grid_set()
+        if page_specifier == 0:
+            for page in page_info:
+                page()
+            grid_call()
+        else:
+            for page in page_info:
+                page(page_specifier)
+            grid_call()
+
         inp = input("Enter a command, h for help: ")
         if inp in commands:
             if inp == "h":
@@ -323,12 +354,4 @@ if __name__ == "__main__":
                 page_info = [animate_system]
         else:
             print("that's not a command")
-        grid_set()
-        if page_specifier == 0:
-            for page in page_info:
-                page()
-            grid_call()
-        else:
-            for page in page_info:
-                page(page_specifier)
-            grid_call()        
+    
