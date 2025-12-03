@@ -35,7 +35,8 @@ page_specifier = 0
 
 
 def about():
-    tui_elements.text_box(grid, 5, 35, "stretch", "stretch", quickstart, False) 
+    os.system("cls")
+    tui_elements.text_box(grid, 5, 5, "stretch", "stretch", assets.about, False) 
     
 
 def welcome():
@@ -352,6 +353,9 @@ if __name__ == "__main__":
             if inp == "animate":
                 page_specifier = 0
                 page_info = [animate_system]
+            if inp == "about":
+                page_specifier = 0
+                page_info = [about]
         else:
             print("that's not a command")
     

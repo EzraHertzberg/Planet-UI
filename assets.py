@@ -14,6 +14,35 @@ planet_description =[
 
 moon_count = "no", "no", "one"
 
+about = """
+Planet UI is a program made for the 2025 UVM CS Fair. I created to learn more about displaying things in the text, and because I wanted to try out using the
+Python astronomy libraries.
+
+This program includes:
+-Information pages for all 8 of the major planets in the Solar System based on data from JPL at the set time
+-A visualisation of the solar system with ascii graphics also based on JPL data at the set time
+-An animation mode for the solar system visualisation
+-Settable Date and Time
+-Settable Units
+
+This program notable uses:
+-A custom sort of mini library to display ascii text to the screen. This library is something I programmed especially for this project and it includes customizable
+textboxes, rings, and circles that can orbit.
+-JPL DATA for both the information pages and Solar System visualization
+
+
+Some interesting things you can do with this program include:
+-Setting the date to a solstice or equinox and seeing how Earth will be lined up at a 90 degree angle from the Vernal Equinox
+-Setting the date to ones birthday and then setting it back to the current day looking to see how the planets positions have changed since one was born
+-Animating the solar system and watching how planets further from the Sun move at slower rates
+-Checking the distances of one planet to another in light time, and imagining that this is how long it would take for a person to send a radio signal
+radio signal to travel from one planet to another
+
+
+I hope you find this program at least a little bit cool and eductional. Thank you for checking it out.
+-Ezra
+""" 
+
 welcome_text = r"""
 `8.`888b                 ,8' 8 8888888888   8 8888         ,o888888o.        ,o888888o.           ,8.       ,8.          8 8888888888
  `8.`888b               ,8'  8 8888         8 8888        8888     `88.   . 8888     `88.        ,888.     ,888.         8 8888
